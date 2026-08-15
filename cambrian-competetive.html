@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cambrian Competitive Tournament 2026</title>
+<style>
+  :root{
+    --bg:#f5f7f6; --card:#ffffff; --ink:#18211d; --muted:#61706a;
+    --accent:#176b55; --accent2:#dcefe8; --line:#dce4e0; --gold:#b8860b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+  header{background:linear-gradient(135deg,#123d32,#176b55);color:#fff;padding:56px 20px 42px}
+  .wrap{max-width:1050px;margin:auto}
+  .eyebrow{font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;opacity:.78;font-weight:700}
+  h1{font-size:clamp(2.3rem,6vw,4.4rem);line-height:1.05;margin:12px 0}
+  .tagline{font-size:1.15rem;opacity:.9}
+  nav{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 12px #0000000b}
+  nav .wrap{display:flex;gap:8px;overflow:auto}
+  nav button{border:0;background:none;padding:16px 18px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent}
+  nav button.active{color:var(--accent);border-bottom-color:var(--accent)}
+  main{padding:34px 20px 70px}
+  section.tab{display:none}
+  section.tab.active{display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px;margin:18px 0;box-shadow:0 8px 24px #183b3010}
+  h2{font-size:1.7rem;margin:0 0 14px}
+  h3{font-size:1.15rem;margin-top:26px}
+  .intro{font-size:1.05rem}
+  .highlight{background:var(--accent2);border-left:5px solid var(--accent);padding:18px 20px;border-radius:10px;margin:20px 0}
+  .rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .rule{border:1px solid var(--line);border-radius:14px;padding:20px;background:#fff}
+  .rule h3{margin:0 0 8px}
+  .badge{display:inline-block;background:#eef3f1;color:var(--accent);font-size:.78rem;font-weight:800;padding:4px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em}
+  ul{padding-left:22px}
+  .category{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .division{border:1px solid var(--line);border-radius:16px;padding:22px;background:#fff}
+  .division h3{margin:0 0 4px}
+  .division .count{color:var(--muted);font-size:.9rem}
+  .empty{color:var(--muted);padding:18px;background:#f7f9f8;border-radius:10px;margin-top:14px}
+  footer{text-align:center;color:var(--muted);padding:30px 20px;border-top:1px solid var(--line)}
+  @media(max-width:700px){.category{grid-template-columns:1fr}.card{padding:21px}header{padding-top:40px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Cambrian Pickleball Community</div>
+    <h1>Cambrian Competitive<br>Tournament 2026</h1>
+    <div class="tagline">Community Spirit. Competitive Play. One Tournament.</div>
+  </div>
+</header>
+
+<nav>
+  <div class="wrap">
+    <button class="tabBtn active" data-tab="rules">Tournament Info & Rules</button>
+    <button class="tabBtn" data-tab="players">Who's Playing</button>
+  </div>
+</nav>
+
+<main class="wrap">
+<section id="rules" class="tab active">
+  <div class="card intro">
+    <h2>A New Kind of Tournament</h2>
+    <p>For the past several years, our neighborhood pickleball tournaments have been built around community, inclusiveness, and fun. We have intentionally created opportunities for players of all skill levels to enjoy meaningful games, meet new people, and strengthen the friendships that make our pickleball community special. That spirit remains at the heart of everything we do.</p>
+    <p>This tournament introduces a new format for our community — a <strong>purely competitive event</strong>. It is important to emphasize that this is <strong>not replacing our regular community tournaments</strong>. Those tournaments will continue to be an integral part of our pickleball community, and the next organizing team has already been identified and is actively planning the next community tournament.</p>
+    <p>The objective of this event is to provide a platform for players who are looking for a more competitive experience to challenge themselves and enjoy tournament-style play. While the focus shifts toward competition, the values that define our community do not. We expect every participant to compete with integrity, respect their opponents and officials, and demonstrate the sportsmanship that has always made our group welcoming and enjoyable.</p>
+    <p>We hope this tournament adds another dimension to our community by offering both the excitement of competition and the camaraderie that brings us together on the court.</p>
+  </div>
+
+  <div class="card">
+    <h2>When & Where</h2>
+    <div class="rules-grid">
+      <div class="rule">
+        <span class="badge">Location</span>
+        <h3>AVAC</h3>
+        <p>The tournament will be held at AVAC.</p>
+      </div>
+      <div class="rule">
+        <span class="badge">Date</span>
+        <h3>September 2026</h3>
+        <p>The final date will be based on the availability of the majority of registered players.</p>
+      </div>
+    </div>
+    <p>Once registration is complete and player availability is collected, we will announce the final tournament date.</p>
+  </div>
+
+  <div class="card">
+    <h2>Rules & Guidance</h2>
+    <p>Unlike our previous community tournaments, this event does not involve organizers creating teams or assigning partners. Since this is a doubles tournament, participants are free to choose their own partner and register together as a doubles pair.</p>
+    <div class="rules-grid">
+      <div class="rule"><span class="badge">Division 1</span><h3>Advanced</h3><p>Open to all players.</p></div>
+      <div class="rule"><span class="badge">Division 2</span><h3>Intermediate</h3><p>Open to all players.</p></div>
+    </div>
+
+    <h3>Choose Your Own Partner</h3>
+    <p>Players register as a doubles pair and are free to register in either division based on where they feel they can compete most appropriately.</p>
+
+    <div class="highlight">
+      <strong>Looking for a Partner?</strong><br>
+      Players who have not yet found a partner are welcome to register as individuals. A list of players registered individually will be published to help facilitate partner matching.
+    </div>
+
+    <h3>No Sandbagging</h3>
+    <p>To ensure fair and competitive matchups, <strong>sandbagging will not be permitted</strong>. Organizers may review registrations and pairings across categories. If two players who are clearly playing at an Advanced level register together in the Intermediate category, they may be asked to compete in the Advanced category instead.</p>
+    <p>The goal is to maintain a competitive and enjoyable experience for everyone while keeping category selection as open and flexible as possible.</p>
+
+    <h3>Choose Your Competitive Level</h3>
+    <p>Players are encouraged to select the category where they believe they can have the <strong>most competitive and enjoyable matches</strong>. Choosing the right level gives each pair the best opportunity to compete strongly, advance through the tournament, and ultimately contend for the trophy.</p>
+
+    <h3>Competitive Group Play</h3>
+    <p>Depending on the number of registrations, pairs may be divided into groups with round-robin play within each group. Not every pair will necessarily play every other pair in the category. Based on group-stage results, the top-performing pairs will advance to the playoffs and compete for the championship.</p>
+
+    <h3>Finalizing Categories</h3>
+    <p>Once registration closes, we will publish the registered pairs in each category and open a brief window for participants to finalize their preferred category. This will allow everyone to <strong>review the matchups</strong> and choose the level of competition in which they would most like to participate.</p>
+
+    <div class="highlight">
+      <strong>Important:</strong> The final tournament format — including pools, brackets, round-robin structure, and playoff qualification — will be determined after registration closes and will depend on the number of entries in each category.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Registration Fees</h2>
+    <p>Registration fees for each category will be finalized after registration closes and will depend on the total number of participants registered.</p>
+    <p>This approach ensures that tournament expenses, including <strong>court reservations, balls, prizes, and other event costs</strong>, are shared fairly among participants.</p>
+  </div>
+</section>
+
+<section id="players" class="tab">
+  <div class="card">
+    <h2>Who's Playing</h2>
+    <p>Registered pairs will appear here as sign-ups come in. After registration closes, pairs will have a brief opportunity to review the matchups and finalize their preferred category.</p>
+    <div class="category">
+      <div class="division">
+        <span class="badge">Doubles Open</span>
+        <h3>Advanced</h3>
+        <div class="count">0 pairs registered</div>
+        <div class="empty">No pairs registered yet.</div>
+      </div>
+      <div class="division">
+        <span class="badge">Doubles Open</span>
+        <h3>Intermediate</h3>
+        <div class="count">0 pairs registered</div>
+        <div class="empty">No pairs registered yet.</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  Cambrian Competitive Tournament 2026 · Play hard. Play fair. Stay connected.
+</footer>
+
+<script>
+document.querySelectorAll('.tabBtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tabBtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
