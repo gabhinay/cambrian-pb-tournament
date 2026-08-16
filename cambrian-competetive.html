@@ -129,21 +129,67 @@
 <section id="players" class="tab">
   <div class="card">
     <h2>Who's Playing</h2>
-    <p>Registered pairs will appear here as sign-ups come in. After registration closes, pairs will have a brief opportunity to review the matchups and finalize their preferred category.</p>
+
+    <p>
+      Registered pairs will appear here automatically from the tournament
+      registration sheet.
+    </p>
+
+    <div id="sheetStatus" class="highlight">
+      Loading registrations…
+    </div>
+
     <div class="category">
+
+      <!-- ADVANCED -->
       <div class="division">
         <span class="badge">Doubles Open</span>
         <h3>Advanced</h3>
-        <div class="count">0 pairs registered</div>
-        <div class="empty">No pairs registered yet.</div>
+
+        <div id="advancedCount" class="count">
+          Loading…
+        </div>
+
+        <div id="advancedList" class="empty">
+          Loading registrations…
+        </div>
       </div>
+
+      <!-- INTERMEDIATE -->
       <div class="division">
         <span class="badge">Doubles Open</span>
         <h3>Intermediate</h3>
-        <div class="count">0 pairs registered</div>
-        <div class="empty">No pairs registered yet.</div>
+
+        <div id="intermediateCount" class="count">
+          Loading…
+        </div>
+
+        <div id="intermediateList" class="empty">
+          Loading registrations…
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LOOKING FOR PARTNER -->
+    <div
+      class="card"
+      style="margin:24px 0 0;padding:22px;background:#f7f9f8"
+    >
+      <h3 style="margin-top:0">
+        Looking for a Partner?
+      </h3>
+
+      <p>
+        Players who registered individually and are still looking
+        for a partner will be listed here.
+      </p>
+
+      <div id="individualList" class="empty">
+        Loading registrations…
       </div>
     </div>
+
   </div>
 </section>
 </main>
@@ -162,6 +208,466 @@ document.querySelectorAll('.tabBtn').forEach(btn=>{
     window.scrollTo({top:0,behavior:'smooth'});
   });
 });
+</script>
+
+<script>
+
+/* =========================================================
+   GOOGLE SHEETS REGISTRATION DATABASE
+   ========================================================= */
+
+const SHEET_CSV_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTrs0XwNUq7Iy9MqOs48egECDl14IyXFhiYNa5cBqHSkxUbirRO2udwNrQ3juMubRiifEQM6FnNOkQF/pub?gid=1790095873&single=true&output=csv";
+
+
+/* =========================================================
+   CSV PARSER
+   ========================================================= */
+
+function parseCSV(text) {
+
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let quoted = false;
+
+  for (let i = 0; i < text.length; i++) {
+
+    const c = text[i];
+    const next = text[i + 1];
+
+    /* Handle escaped quotes */
+    if (c === '"' && quoted && next === '"') {
+      cell += '"';
+      i++;
+    }
+
+    /* Start / end quoted cell */
+    else if (c === '"') {
+      quoted = !quoted;
+    }
+
+    /* End of CSV cell */
+    else if (c === ',' && !quoted) {
+      row.push(cell.trim());
+      cell = "";
+    }
+
+    /* End of row */
+    else if ((c === '\n' || c === '\r') && !quoted) {
+
+      if (c === '\r' && next === '\n') {
+        i++;
+      }
+
+      row.push(cell.trim());
+
+      if (row.some(value => value !== "")) {
+        rows.push(row);
+      }
+
+      row = [];
+      cell = "";
+    }
+
+    else {
+      cell += c;
+    }
+  }
+
+  /* Add final row */
+  if (cell !== "" || row.length > 0) {
+    row.push(cell.trim());
+
+    if (row.some(value => value !== "")) {
+      rows.push(row);
+    }
+  }
+
+  return rows;
+}
+
+
+/* =========================================================
+   HTML SAFETY
+   ========================================================= */
+
+function escapeHTML(value) {
+
+  return String(value || "")
+    .replace(/[&<>"']/g, character => {
+
+      const entities = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      };
+
+      return entities[character];
+    });
+}
+
+
+/* =========================================================
+   DISPLAY PAIRS
+   ========================================================= */
+
+function renderPairs(pairs) {
+
+  if (pairs.length === 0) {
+    return "No pairs registered yet.";
+  }
+
+  return pairs.map((pair, index) => {
+
+    return `
+      <div
+        style="
+          padding:10px 0;
+          border-bottom:1px solid #dce4e0;
+        "
+      >
+        <strong>
+          ${index + 1}. 
+          ${escapeHTML(pair.name)}
+          &amp;
+          ${escapeHTML(pair.partner)}
+        </strong>
+      </div>
+    `;
+
+  }).join("");
+}
+
+
+/* =========================================================
+   DISPLAY INDIVIDUAL PLAYERS
+   ========================================================= */
+
+function renderIndividuals(players) {
+
+  if (players.length === 0) {
+
+    return "No individual players currently looking for a partner.";
+
+  }
+
+  return players.map(player => {
+
+    return `
+      <div
+        style="
+          padding:10px 0;
+          border-bottom:1px solid #dce4e0;
+        "
+      >
+        <strong>
+          ${escapeHTML(player.name)}
+        </strong>
+      </div>
+    `;
+
+  }).join("");
+}
+
+
+/* =========================================================
+   LOAD GOOGLE SHEET
+   ========================================================= */
+
+async function loadRegistrations() {
+
+  const status =
+    document.getElementById("sheetStatus");
+
+  try {
+
+    const response =
+      await fetch(
+        SHEET_CSV_URL,
+        {
+          cache: "no-store"
+        }
+      );
+
+    if (!response.ok) {
+
+      throw new Error(
+        "Unable to load Google Sheet"
+      );
+
+    }
+
+    const csvText =
+      await response.text();
+
+    const rows =
+      parseCSV(csvText);
+
+    if (rows.length < 2) {
+
+      throw new Error(
+        "No registrations found"
+      );
+
+    }
+
+
+    /* =====================================================
+       FIND COLUMNS
+       ===================================================== */
+
+    const headers =
+      rows[0].map(
+        header => header
+          .toLowerCase()
+          .trim()
+      );
+
+    function columnIndex(name) {
+
+      return headers.indexOf(
+        name.toLowerCase()
+      );
+
+    }
+
+
+    const typeColumn =
+      columnIndex(
+        "Registering as a Pair or Stag?"
+      );
+
+    const categoryColumn =
+      columnIndex(
+        "Tournament Category?"
+      );
+
+    const nameColumn =
+      columnIndex(
+        "Your Name?"
+      );
+
+    const partnerColumn =
+      columnIndex(
+        "If registering as a Pair, Who is your partner?"
+      );
+
+
+    /* =====================================================
+       VALIDATE COLUMNS
+       ===================================================== */
+
+    if (
+      typeColumn < 0 ||
+      categoryColumn < 0 ||
+      nameColumn < 0 ||
+      partnerColumn < 0
+    ) {
+
+      throw new Error(
+        "Google Sheet column names do not match"
+      );
+
+    }
+
+
+    /* =====================================================
+       BUILD REGISTRATION OBJECTS
+       ===================================================== */
+
+    const registrations =
+      rows
+        .slice(1)
+        .map(row => {
+
+          return {
+
+            type:
+              (row[typeColumn] || "")
+                .trim()
+                .toLowerCase(),
+
+            category:
+              (row[categoryColumn] || "")
+                .trim()
+                .toLowerCase(),
+
+            name:
+              (row[nameColumn] || "")
+                .trim(),
+
+            partner:
+              (row[partnerColumn] || "")
+                .trim()
+
+          };
+
+        })
+        .filter(
+          registration =>
+            registration.name !== ""
+        );
+
+
+    /* =====================================================
+       IDENTIFY PAIRS
+       ===================================================== */
+
+    function isPair(registration) {
+
+      if (!registration.partner) {
+        return false;
+      }
+
+      /*
+        Supports both:
+        "Pair"
+        and the existing "Stag" terminology.
+      */
+
+      if (
+        registration.type.includes("pair")
+      ) {
+        return true;
+      }
+
+      if (
+        registration.type.includes("stag")
+      ) {
+        return true;
+      }
+
+      return Boolean(
+        registration.partner
+      );
+
+    }
+
+
+    /* =====================================================
+       SPLIT INTO CATEGORIES
+       ===================================================== */
+
+    const advanced =
+      registrations.filter(
+        registration =>
+          isPair(registration) &&
+          registration.category.includes(
+            "advanced"
+          )
+      );
+
+
+    const intermediate =
+      registrations.filter(
+        registration =>
+          isPair(registration) &&
+          registration.category.includes(
+            "intermediate"
+          )
+      );
+
+
+    const individuals =
+      registrations.filter(
+        registration =>
+          !isPair(registration)
+      );
+
+
+    /* =====================================================
+       UPDATE WEBSITE
+       ===================================================== */
+
+    document.getElementById(
+      "advancedCount"
+    ).textContent =
+      `${advanced.length} pair${
+        advanced.length === 1 ? "" : "s"
+      } registered`;
+
+
+    document.getElementById(
+      "intermediateCount"
+    ).textContent =
+      `${intermediate.length} pair${
+        intermediate.length === 1 ? "" : "s"
+      } registered`;
+
+
+    document.getElementById(
+      "advancedList"
+    ).innerHTML =
+      renderPairs(advanced);
+
+
+    document.getElementById(
+      "intermediateList"
+    ).innerHTML =
+      renderPairs(intermediate);
+
+
+    document.getElementById(
+      "individualList"
+    ).innerHTML =
+      renderIndividuals(
+        individuals
+      );
+
+
+    /* =====================================================
+       STATUS MESSAGE
+       ===================================================== */
+
+    const totalPairs =
+      advanced.length +
+      intermediate.length;
+
+    status.textContent =
+      `Showing ${totalPairs} registered pair${
+        totalPairs === 1 ? "" : "s"
+      } and ${individuals.length} individual registration${
+        individuals.length === 1 ? "" : "s"
+      }.`;
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    status.textContent =
+      "Registrations could not be loaded. Please check that the Google Sheet is published to the web as CSV.";
+
+    document.getElementById(
+      "advancedList"
+    ).textContent =
+      "Unable to load registrations.";
+
+    document.getElementById(
+      "intermediateList"
+    ).textContent =
+      "Unable to load registrations.";
+
+    document.getElementById(
+      "individualList"
+    ).textContent =
+      "Unable to load registrations.";
+
+  }
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+loadRegistrations();
+
 </script>
 </body>
 </html>
